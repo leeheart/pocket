@@ -1,10 +1,7 @@
 <template>
-  <div class="nav-wrapper">
-    <div class="content">
-      Label
-    </div>
-    <Nav/>
-  </div>
+  <Layout>
+    <p>Labels</p>
+  </Layout>
 </template>
 
 <script lang="ts">
@@ -12,17 +9,3 @@
     name: 'Labels',
   };
 </script>
-
-<style lang="scss" scoped>
-  .nav-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-
-  .content {
-    border: 1px solid green;
-    flex-grow: 1;
-    overflow: auto;
-  }
-</style>
