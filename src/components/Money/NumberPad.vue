@@ -1,15 +1,17 @@
 <template>
   <div class="numberPad">
-    <div class="output">{{output}}</div>
+    <div class="output"><span class="rmb">￥</span>{{output}}</div>
     <div class="buttons">
       <button @click="inputContent">1</button>
       <button @click="inputContent">2</button>
       <button @click="inputContent">3</button>
-      <button @click="deleteNumber">删除</button>
+      <button @click="deleteNumber">
+        <Icon name="#backspace"/>
+      </button>
       <button @click="inputContent">4</button>
       <button @click="inputContent">5</button>
       <button @click="inputContent">6</button>
-      <button @click="clear">清空</button>
+      <button @click="clear">清零</button>
       <button @click="inputContent">7</button>
       <button @click="inputContent">8</button>
       <button @click="inputContent">9</button>
@@ -38,25 +40,33 @@
         }
         return;
       }
-      if (this.output.indexOf('.') >= 0 && input === '.') {
-        return;
+      if (this.output.indexOf('.') >= 0) {
+        const dotIndex = this.output.indexOf('.');
+        const afterDotLength = this.output.substr(dotIndex+1).length;
+        if(input === '.'){return;}
+        if(afterDotLength>=2){return;}
       }
       if (this.output.length === 16) {
         return;
       }
       this.output += input;
     }
+
     clear() {
       this.output = '0';
     }
-    deleteNumber(){
-      if(this.output.length === 1){
+
+    deleteNumber() {
+      if (this.output.length === 1) {
         this.output = '0';
         return;
       }
       this.output = this.output.slice(0, -1);
     }
-    ok(){/*  */}
+
+    ok() {
+      this.$emit('update:value', this.output);
+    }
   }
 </script>
 
@@ -71,6 +81,10 @@
       text-align: right;
       padding: 9px 16px;
       height: 72px;
+
+      > .rmb {
+        font-family: $font-hei;
+      }
     }
 
     > .buttons {
@@ -81,6 +95,7 @@
         height: 64px;
         float: left;
         border: none;
+        font-size: 20px;
 
         &.ok {
           height: 64*2px;
@@ -92,6 +107,10 @@
         }
 
         $bg: #f2f2f2;
+
+        &:nth-child(4) > svg {
+          font-size: 24px;
+        }
 
         &:nth-child(1) {
           background: $bg;
