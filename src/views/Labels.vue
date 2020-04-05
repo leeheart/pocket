@@ -1,12 +1,10 @@
 <template>
   <Layout>
-    <div>
-      <ol class="tags">
-        <li v-for="(tag, index) in tags" :key="index">
-          <span>{{tag.name}}</span>
-          <Icon name="right" />
-        </li>
-      </ol>
+    <div class="tags">
+      <router-link class="tag" :to="`/labels/edit/${tag.id}`" v-for="(tag, index) in tags" :key="index">
+        <span>{{tag.name}}</span>
+        <Icon name="right"/>
+      </router-link>
     </div>
     <div class="createTag-wrapper">
       <button @click="createTag" class="createTag">新建标签</button>
@@ -20,47 +18,51 @@
   import tagListModel from '@/models/tagListModel';
 
   @Component
-  export default class Labels extends Vue{
+  export default class Labels extends Vue {
     tags = tagListModel.fetch();
 
-    createTag(){
+    createTag() {
       const name = window.prompt('请输入标签名：');
-      if(name){
+      if (name) {
         const message = tagListModel.create(name);
-        if(message === 'duplicated'){
-          window.alert('标签已存在')
+        if (message === 'duplicated') {
+          window.alert('标签已存在');
         }
-      }else{
-        window.alert('标签名不可为空！')
+      } else {
+        window.alert('标签名不可为空！');
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-  .tags{
+  .tags {
     background: white;
     padding: 0 16px;
     font-size: 18px;
-    > li{
+
+    > .tag {
       min-height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid #e6e6e6;
-      svg{
+
+      svg {
         color: #666;
       }
     }
   }
-  .createTag{
+
+  .createTag {
     border: none;
     background: #767676;
     color: #fff;
     border-radius: 4px;
     height: 40px;
     padding: 0 16px;
-    &-wrapper{
+
+    &-wrapper {
       text-align: center;
       margin-top: 28px;
       padding: 16px;
