@@ -6,7 +6,7 @@
       <button @click="inputContent">2</button>
       <button @click="inputContent">3</button>
       <button @click="deleteNumber">
-        <Icon name="#backspace"/>
+        <Icon name="backspace"/>
       </button>
       <button @click="inputContent">4</button>
       <button @click="inputContent">5</button>
@@ -66,6 +66,8 @@
 
     ok() {
       this.$emit('update:value', this.output);
+      this.$emit('submit', this.output);
+      this.output = '0';
     }
   }
 </script>
