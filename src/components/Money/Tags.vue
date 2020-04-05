@@ -3,7 +3,7 @@
     <ul class="current">
       <li @click="toggle(tag)"
           :class="{selected: selectedTags.indexOf(tag)>=0}"
-          v-for="tag in tagSource" :key="tag">{{tag}}
+          v-for="tag in tagSource" :key="tag">{{tag.name}}
       </li>
     </ul>
     <div class="new">
@@ -14,7 +14,7 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {Component, Prop, Watch} from 'vue-property-decorator';
+  import {Component, Prop} from 'vue-property-decorator';
 
   @Component
   export default class Tags extends Vue {
