@@ -3,7 +3,7 @@
     <ul class="current">
       <li @click="toggle(tag)"
           :class="{selected: selectedTags.indexOf(tag)>=0}"
-          v-for="tag in tagSource" :key="tag">{{tag.name}}
+          v-for="(tag, index) in tagSource" :key="index">{{tag.name}}
       </li>
     </ul>
     <div class="new">
