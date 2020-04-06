@@ -1,15 +1,15 @@
 <template>
   <Layout>
     <div class="navBar">
-      <Icon class="leftIcon" name="left" />
+      <Icon class="leftIcon" name="left" @click="goBack"/>
       <span class="title">编辑标签</span>
       <span class="rightIcon"></span>
     </div>
     <div class="form-wrapper">
-      <FormItem :value="tag.name" field-name="标签名" place-holder="请输入标签名" />
+      <FormItem @update:value="updateTag" :value="tag.name" field-name="标签名" place-holder="请输入标签名"/>
     </div>
     <div class="button-wrapper">
-      <Button>删除标签</Button>
+      <Button @click="removeTag">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -20,48 +20,68 @@
   import tagListModel from '@/models/tagListModel';
   import FormItem from '@/components/Money/FormItem.vue';
   import Button from '@/components/Button.vue';
+
   @Component({
     components: {Button, FormItem}
   })
   export default class EditLabel extends Vue {
-    tag?: {id: string; name: string};
-    created(){
+    tag?: { id: string; name: string };
+
+    created() {
       const id = this.$route.params.id;
       const tags = tagListModel.fetch();
       const tag = tags.filter(item => item.id === id)[0];
-      if(tag){
+      if (tag) {
         this.tag = tag;
-      }else{
+      } else {
         this.$router.replace('/404');
       }
     }
 
+    updateTag(name: string) {
+      if (this.tag) {
+        tagListModel.update(this.tag.id, name);
+      }
+    }
+
+    removeTag() {
+      if (this.tag) {
+        tagListModel.remove(this.tag.id);
+      }
+    }
+    goBack(){
+      this.$router.back();
+    }
   }
 </script>
 
 <style lang="scss" scoped>
-  .navBar{
+  .navBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
     font-size: 16px;
     background: #fff;
-    > .leftIcon{
+
+    > .leftIcon {
       width: 24px;
       height: 24px;
     }
-    > .rightIcon{
+
+    > .rightIcon {
       width: 24px;
       height: 24px;
     }
   }
-  .form-wrapper{
+
+  .form-wrapper {
     background: #fff;
     margin-top: 16px;
     font-size: 16px;
   }
-  .button-wrapper{
+
+  .button-wrapper {
     text-align: center;
     padding: 16px;
     margin-top: 44-16px;
