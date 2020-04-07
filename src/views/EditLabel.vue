@@ -17,24 +17,20 @@
 <script lang="ts">
   import Vue from 'vue';
   import {Component} from 'vue-property-decorator';
-  import tagListModel from '@/models/tagListModel';
   import FormItem from '@/components/Money/FormItem.vue';
   import Button from '@/components/Button.vue';
+  import store from '@/store/index2';
 
   @Component({
     components: {Button, FormItem}
   })
   export default class EditLabel extends Vue {
-    tag?: { id: string; name: string };
+    tag?: Tag;
     newTagName?: string;
 
     created() {
-      const id = this.$route.params.id;
-      const tags = tagListModel.fetch();
-      const tag = tags.filter(item => item.id === id)[0];
-      if (tag) {
-        this.tag = tag;
-      } else {
+      this.tag = store.findTag(this.$route.params.id);
+      if(!this.tag) {
         this.$router.replace('/404');
       }
     }
@@ -46,7 +42,7 @@
             this.$router.back();
             return;
           }
-          const message = tagListModel.update(this.tag.id, this.newTagName);
+          const message = store.updateTag(this.tag.id, this.newTagName);
           if(message === 'duplicated'){
             window.alert('标签名已存在');
             return;
@@ -63,8 +59,10 @@
       const message = window.confirm('确定删除此标签？');
       if(message){
         if (this.tag) {
-          if (tagListModel.remove(this.tag.id)) {
+          if (store.removeTag(this.tag.id)) {
             this.$router.back();
+          }else{
+            window.alert('删除失败');
           }
         }
       }
