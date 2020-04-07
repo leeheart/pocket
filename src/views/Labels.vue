@@ -22,19 +22,13 @@
     components: {Button}
   })
   export default class Labels extends Vue {
-    tags = tagListModel.fetch();
+    tags = window.tagList;
 
     createTag() {
       const name = window.prompt('请输入标签名：');
-      if (name) {
-        const message = tagListModel.create(name);
-        if (message === 'duplicated') {
-          window.alert('标签已存在');
-        }
-      }else if(name === ''){
-        window.alert('标签名不可为空')
-      }
+      window.createTag(name);
     }
+
   }
 </script>
 
@@ -59,7 +53,7 @@
 
   .createTag {
     border: none;
-    background: #767676;
+    background: #3498DB;
     color: #fff;
     border-radius: 4px;
     height: 40px;
