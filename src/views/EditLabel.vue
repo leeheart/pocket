@@ -3,13 +3,13 @@
     <div class="navBar">
       <Icon class="leftIcon" name="left" @click="goBack"/>
       <span class="title">编辑标签</span>
-      <span class="rightIcon"></span>
+      <Icon class="rightIcon" name="confirm" @click="submit"/>
     </div>
     <div class="form-wrapper">
-      <FormItem @update:value="updateTag" :value="tag.name" field-name="标签名" place-holder="请输入标签名"/>
+      <FormItem @update:value="newTagName = $event" :value="tag.name" field-name="标签名" place-holder="请输入标签名"/>
     </div>
     <div class="button-wrapper">
-      <Button @click="removeTag">删除标签</Button>
+      <Button class="button" @click="removeTag">删除标签</Button>
     </div>
   </Layout>
 </template>
@@ -26,6 +26,7 @@
   })
   export default class EditLabel extends Vue {
     tag?: { id: string; name: string };
+    newTagName?: string;
 
     created() {
       const id = this.$route.params.id;
@@ -38,21 +39,38 @@
       }
     }
 
-    updateTag(name: string) {
-      if (this.tag) {
-        tagListModel.update(this.tag.id, name);
+    submit() {
+      if (this.newTagName) {
+        if (this.tag) {
+          if(this.newTagName === this.tag.name){
+            this.$router.back();
+            return;
+          }
+          const message = tagListModel.update(this.tag.id, this.newTagName);
+          if(message === 'duplicated'){
+            window.alert('标签名已存在');
+            return;
+          }
+        }
+      }else if(this.newTagName === ''){
+        window.alert('标签名不可为空');
+        return;
       }
+      this.$router.back();
     }
 
     removeTag() {
-      if (this.tag) {
-        if(tagListModel.remove(this.tag.id)){
-          window.alert('删除成功');
-          this.$router.back();
+      const message = window.confirm('确定删除此标签？');
+      if(message){
+        if (this.tag) {
+          if (tagListModel.remove(this.tag.id)) {
+            this.$router.back();
+          }
         }
       }
     }
-    goBack(){
+
+    goBack() {
       this.$router.back();
     }
   }
@@ -88,5 +106,9 @@
     text-align: center;
     padding: 16px;
     margin-top: 44-16px;
+
+    > .button {
+      background: #E74C3C;
+    }
   }
 </style>
