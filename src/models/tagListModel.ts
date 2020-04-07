@@ -1,21 +1,10 @@
 import createId from '@/lib/createId';
 
-type Tag = {
-  id: string;
-  name: string;
-}
-type TagListModel = {
-  data: Tag[];
-  fetch: () => Tag[];
-  save: () => void;
-  create: (name: string) => 'success' | 'duplicated';
-  update: (id: string, newName: string) => 'not found' | 'duplicated' | 'success';
-  remove: (id: string) => boolean;
-}
 const localStorageKeyName = 'tagList';
 const tagListModel: TagListModel = {
   data: [],
   fetch() {
+    console.log('fetch了');
     this.data = JSON.parse(localStorage.getItem(localStorageKeyName) || '[]');
     return this.data;
   },
