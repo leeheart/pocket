@@ -35,13 +35,14 @@
       align-items: center;
       padding: 2px 0;
       transition: all 0.5s linear;
+      color: #B5B5B5;
       > .icon{
         width: 32px;
         height: 32px;
       }
     }
     > .item.selected{
-      color: red;
+      color: black;
     }
   }
 </style>

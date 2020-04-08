@@ -31,6 +31,7 @@
     output = '0';
 
     inputContent(e: MouseEvent) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const input = (e.target as HTMLButtonElement).textContent!;
       if (this.output === '0') {
         if (input === '.') {

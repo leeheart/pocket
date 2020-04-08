@@ -1,9 +1,9 @@
 <template>
   <div class="tags">
     <ul class="current">
-      <li @click="toggle(tag)"
-          :class="{selected: selectedTags.indexOf(tag)>=0}"
-          v-for="(tag, index) in tagSource" :key="index">{{tag.name}}
+      <li @click="toggle(tag.name)"
+          :class="{selected: selectedTags.indexOf(tag.name)>=0}"
+          v-for="(tag, index) in tagList" :key="index">{{tag.name}}
       </li>
     </ul>
     <div class="new">
@@ -14,13 +14,19 @@
 
 <script lang="ts">
   import Vue from 'vue';
-  import {Component, Prop} from 'vue-property-decorator';
-  import store from '@/store/index2';
+  import {Component} from 'vue-property-decorator';
 
   @Component
   export default class Tags extends Vue {
-    @Prop(Array) tagSource: string[] | undefined;
     selectedTags: string[] = [];
+
+    get tagList(){
+      return this.$store.state.tagList;
+    }
+
+    beforeCreate(){
+      this.$store.commit('fetchTags')
+    }
 
     toggle(tag: string) {
       const index = this.selectedTags.indexOf(tag);
@@ -33,8 +39,8 @@
     }
 
     create() {
-      const tagName = window.prompt('请输入标签名称：');
-      store.createTag(tagName);
+      const name = window.prompt('请输入标签名称：');
+      this.$store.commit('createTag', name);
     }
   }
 </script>

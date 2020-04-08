@@ -1,11 +1,11 @@
 <template>
   <layout class-prefix="layout">
-    <Tags @update:value="onUpdateTags" :tag-source.sync="tags"/>
+    <Tags @update:value="onUpdateSelectedTags"/>
     <div class="notes">
       <FormItem place-holder="请输入备注" field-name="备注" @update:value="onUpdateNotes"/>
     </div>
     <Types :value.sync="record.type"/>
-    <NumberPad :type="record.type" @update:value="onUpdateAmount" @submit="saveRecord"/>
+    <NumberPad @update:value="onUpdateAmount" @submit="saveRecord"/>
   </layout>
 </template>
 
@@ -16,15 +16,13 @@
   import Types from '@/components/Money/Types.vue';
   import NumberPad from '@/components/Money/NumberPad.vue';
   import {Component} from 'vue-property-decorator';
-  import store from '@/store/index2';
 
 
   @Component({
-    components: {NumberPad, Types, FormItem, Tags}
+    components: {NumberPad, Types, FormItem, Tags},
+
   })
   export default class Money extends Vue {
-    tags = store.tagList;
-    recordList = store.recordList;
     record: RecordItem = {
       tags: [],
       notes: '',
@@ -32,7 +30,15 @@
       amount: 0
     };
 
-    onUpdateTags(value: string[]) {
+    get recordList(){
+      return this.$store.state.recordList;
+    }
+
+    created(){
+      this.$store.commit('fetchRecords');
+    }
+
+    onUpdateSelectedTags(value: string[]) {
       this.record.tags = value;
     }
 
@@ -45,7 +51,7 @@
     }
 
     saveRecord() {
-      store.createRecord(this.record);
+      this.$store.commit('createRecord', this.record);
     }
   }
 </script>

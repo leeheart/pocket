@@ -7,4 +7,4 @@ const store = {
   ...tagStore
 };
 
-export default store;
+// export default store;
