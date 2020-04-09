@@ -17,19 +17,19 @@
     @Prop({required: true})
     dataSource!: DataSourceItem;
     @Prop(String)
-    readonly value!: string;
+    readonly selection!: string;
     @Prop(String)
     readonly classPrefix?: string;
 
     liClass(item: DataSourceItem){
       return {
-        selected: item.value === this.value,
+        selected: item.value === this.selection,
         [this.classPrefix+'-item']: this.classPrefix
       }
     }
 
     select(item: DataSourceItem){
-      this.$emit('update:value', item.value)
+      this.$emit('update:selection', item.value)
     }
   }
 </script>
