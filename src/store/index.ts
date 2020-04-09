@@ -2,15 +2,26 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import clone from '@/lib/clone';
 import createId from '@/lib/createId';
+import router from '@/router';
 
 Vue.use(Vuex);
 
+type RootState = {
+  recordList: RecordItem[];
+  tagList: Tag[];
+  currentTag?: Tag;
+}
+
 const store = new Vuex.Store({
   state: {
-    recordList: [] as RecordItem[],
-    tagList: [] as Tag[]
-  },
+    recordList: [],
+    tagList: [],
+    currentTag: undefined
+  } as RootState,
   mutations: {
+    setCurrentTag(state, id){
+      state.currentTag = state.tagList.filter(item => item.id === id)[0];
+    },
     fetchRecords(state) {
       state.recordList = JSON.parse(localStorage.getItem('recordList') || '[]');
     },
@@ -26,9 +37,6 @@ const store = new Vuex.Store({
 
     fetchTags(state) {
       state.tagList = JSON.parse(localStorage.getItem('tagList') || '[]');
-    },
-    findTag(state, id: string) {
-      return state.tagList.filter(item => item.id === id)[0];
     },
     saveTags(state) {
       localStorage.setItem('tagList', JSON.stringify(state.tagList));
@@ -55,9 +63,24 @@ const store = new Vuex.Store({
         const index = state.tagList.indexOf(tag);
         state.tagList.splice(index, 1);
         store.commit('saveTags');
-        return true;
+        router.back();
       }else{
-        return false;
+        window.alert('删除失败')
+      }
+    },
+    updateTag(state, payload: {id: string; name: string}) {
+      const {id, name} = payload;
+      const idList = state.tagList.map(item => item.id);
+      if(idList.indexOf(id)>=0){
+        const nameList = state.tagList.map(item => item.name);
+        if(nameList.indexOf(name)>=0){
+          window.alert('标签名已存在');
+        }else{
+          const tag = state.tagList.filter(item => item.id === id)[0];
+          tag.name = name;
+          store.commit('saveTags');
+          router.back();
+        }
       }
     }
   },

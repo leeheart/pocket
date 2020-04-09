@@ -6,7 +6,7 @@
       <Icon class="rightIcon" name="confirm" @click="submit"/>
     </div>
     <div class="form-wrapper">
-      <FormItem @update:value="newTagName = $event" :value="tag.name" field-name="标签名" place-holder="请输入标签名"/>
+      <FormItem @update:value="onUpdateValue" :value="currentTag.name" field-name="标签名" place-holder="请输入标签名"/>
     </div>
     <div class="button-wrapper">
       <Button class="button" @click="removeTag">删除标签</Button>
@@ -19,51 +19,44 @@
   import {Component} from 'vue-property-decorator';
   import FormItem from '@/components/Money/FormItem.vue';
   import Button from '@/components/Button.vue';
-  import store from '@/store/index2';
 
   @Component({
     components: {Button, FormItem}
   })
   export default class EditLabel extends Vue {
-    tag?: Tag;
-    newTagName?: string;
+    get currentTag() {
+      return this.$store.state.currentTag;
+    }
+    newTagName?: string = undefined;
 
     created() {
-      this.tag = store.findTag(this.$route.params.id);
-      if(!this.tag) {
+      this.$store.commit('fetchTags');
+      this.$store.commit('setCurrentTag', this.$route.params.id);
+      this.newTagName = this.currentTag.name;
+      if (!this.currentTag) {
         this.$router.replace('/404');
       }
     }
 
+    onUpdateValue(name: string){
+      this.newTagName = name;
+    }
+
     submit() {
-      if (this.newTagName) {
-        if (this.tag) {
-          if(this.newTagName === this.tag.name){
-            this.$router.back();
-            return;
-          }
-          const message = store.updateTag(this.tag.id, this.newTagName);
-          if(message === 'duplicated'){
-            window.alert('标签名已存在');
-            return;
-          }
-        }
-      }else if(this.newTagName === ''){
+      if (this.newTagName === this.currentTag.name) {
+        this.$router.back();
+      } else if (this.newTagName === '') {
         window.alert('标签名不可为空');
-        return;
+      } else{
+        this.$store.commit('updateTag', {id: this.currentTag.id, name: this.newTagName});
       }
-      this.$router.back();
     }
 
     removeTag() {
       const message = window.confirm('确定删除此标签？');
-      if(message){
-        if (this.tag) {
-          if (store.removeTag(this.tag.id)) {
-            this.$router.back();
-          }else{
-            window.alert('删除失败');
-          }
+      if (message) {
+        if (this.currentTag) {
+          this.$store.commit('removeTag', this.currentTag.id);
         }
       }
     }
