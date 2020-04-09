@@ -10,15 +10,20 @@ type RootState = {
   recordList: RecordItem[];
   tagList: Tag[];
   currentTag?: Tag;
+  x?: number;
 }
 
 const store = new Vuex.Store({
   state: {
     recordList: [],
     tagList: [],
-    currentTag: undefined
+    currentTag: undefined,
+    x: undefined
   } as RootState,
   mutations: {
+    setX(state){
+      state.x = 1
+    },
     setCurrentTag(state, id){
       state.currentTag = state.tagList.filter(item => item.id === id)[0];
     },

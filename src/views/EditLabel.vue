@@ -37,11 +37,9 @@
         this.$router.replace('/404');
       }
     }
-
     onUpdateValue(name: string){
       this.newTagName = name;
     }
-
     submit() {
       if (this.newTagName === this.currentTag.name) {
         this.$router.back();
@@ -51,7 +49,6 @@
         this.$store.commit('updateTag', {id: this.currentTag.id, name: this.newTagName});
       }
     }
-
     removeTag() {
       const message = window.confirm('确定删除此标签？');
       if (message) {
@@ -60,7 +57,6 @@
         }
       }
     }
-
     goBack() {
       this.$router.back();
     }
