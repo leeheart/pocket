@@ -24,7 +24,7 @@
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep li.types-item{
+  ::v-deep .types-tabs-item{
     background: #fff;
     &.selected{
       background: #c4c4c4;
@@ -32,5 +32,9 @@
         display: none;
       }
     }
+  }
+
+  ::v-deep .interval-tabs-item{
+    height: 48px;
   }
 </style>
