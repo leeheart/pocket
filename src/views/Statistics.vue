@@ -1,88 +1,82 @@
 <template>
   <Layout>
     <Tabs :data-source="recordTypeList" :selection.sync="type" class-prefix="types"/>
-    <Tabs :data-source="intervalList" :selection.sync="interval" class-prefix="interval"/>
     <ol>
-      <li v-for="(group, name) in result" :key="name">
+      <li v-for="(group, index) in groupedList" :key="index">
         <h3 class="title">
-          {{name}}
+          {{beautify(group.title)}}
+          <span>￥{{group.total}}</span>
         </h3>
         <ol>
-          <li class="record" v-for="(item, index) in group" :key="index">
+          <li class="record" v-for="(item, index) in group.items" :key="index">
             <span class="tag">{{tagString(item.tags)}}</span>
             <span class="notes">{{item.notes}}</span>
-            <span class="money">￥{{item.amount}}33333333333</span>
+            <span class="money">￥{{item.amount}}</span>
           </li>
         </ol>
       </li>
     </ol>
+    <div class="emptyNote" v-if="groupedList.length===0">暂无记录</div>
   </Layout>
 </template>
 
-<style lang="scss" scoped>
-  %item{
-    padding: 8px 16px;
-    line-height: 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .title {
-    @extend %item;
-  }
-  .record {
-    background: #fff;
-    @extend %item;
-    .tag{
-      width: 20%;
-    }
-    .notes{
-      flex-grow: 1;
-      margin-right: 8px;
-      margin-left: 8px;
-    }
-    .money{
-      width: 20%;
-      text-align: right;
-      overflow: auto;
-    }
-  }
-</style>
 
 <script lang="ts">
   import Vue from 'vue';
   import {Component} from 'vue-property-decorator';
   import Tabs from '@/components/Tabs.vue';
-  import intervalList from '@/constants/intervalList';
   import recordTypeList from '@/constants/recordTypeList';
+  import dayjs from 'dayjs';
+  import clone from '@/lib/clone';
 
   @Component({
     components: {Tabs}
   })
   export default class Statistics extends Vue {
     type = '-';
-    interval = 'day';
-    intervalList = intervalList;
     recordTypeList = recordTypeList;
 
-    tagString(tags: string[]){
-      return tags.join(',') || '无标签'
+    beautify(date: string) {
+      const day = dayjs(date);
+      const now = dayjs();
+      if (day.isSame(now, 'day')) {
+        return '今天';
+      } else if (day.isSame(now.subtract(1, 'day'), 'day')) {
+        return '昨天';
+      } else if (day.isSame(now.subtract(2, 'day'), 'day')) {
+        return '前天';
+      } else {
+        return day.format('YYYY年M月D日');
+      }
+    }
+
+    tagString(tags: string[]) {
+      return tags.join(',') || '无标签';
     }
 
     get recordList() {
       return (this.$store.state as RootState).recordList;
     }
 
-    get result() {
+    get groupedList() {
       const {recordList} = this;
-      const hashTable: { [key: string]: RecordItem[] } = {};
-      for (let i = 0; i < recordList.length; i++) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const [date] = recordList[i].createAt!.split('T');
-        hashTable[date] = hashTable[date] || [];
-        hashTable[date].push(recordList[i]);
+      if (recordList.length === 0) {return [];}
+      const sortedList = clone(recordList).filter(r=>r.type === this.type).sort((a, b) => dayjs(b.createAt).valueOf() - dayjs(a.createAt).valueOf());
+      type Result = {title: string; items: RecordItem[]; total?: number}[];
+      const result: Result = [{title: dayjs(sortedList[0].createAt).format('YYYY-MM-DD'), items: [sortedList[0]]}];
+      for (let i = 1; i < sortedList.length; i++) {
+        const current = sortedList[i];
+        const last = result[result.length - 1];
+        if (dayjs(current.createAt).isSame(dayjs(last.title), 'day')) {
+          last.items.push(current);
+        } else {
+          result.push({title: dayjs(current.createAt).format('YYYY-MM-DD'), items: [current]});
+        }
       }
-      return hashTable;
+      result.forEach(group=>{
+        group.total = group.items.reduce((sum, item) => sum + item.amount, 0)
+      });
+      return result;
     }
 
     beforeCreate() {
@@ -94,10 +88,10 @@
 <style lang="scss" scoped>
   ::v-deep {
     .types-tabs-item {
-      background: #fff;
+      background: #c4c4c4;
 
       &.selected {
-        background: #c4c4c4;
+        background: #fff;
 
         &::after {
           display: none;
@@ -108,5 +102,45 @@
     .interval-tabs-item {
       height: 48px;
     }
+  }
+
+  %item {
+    padding: 8px 16px;
+    line-height: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .title {
+    @extend %item;
+  }
+
+  .record {
+    background: #fff;
+    @extend %item;
+
+    .tag {
+      width: 20%;
+    }
+
+    .notes {
+      flex-grow: 1;
+      margin-right: 8px;
+      margin-left: 8px;
+    }
+
+    .money {
+      width: 20%;
+      text-align: right;
+      overflow: auto;
+    }
+  }
+
+  .emptyNote {
+    font-size: 24px;
+    text-align: center;
+    margin-top: 36px;
+    color: rgba(0,0,0,0.5);
   }
 </style>
