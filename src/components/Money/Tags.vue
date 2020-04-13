@@ -53,10 +53,9 @@
     flex-grow: 1;
     overflow: auto;
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
 
     > .current {
-      order: 1;
       display: flex;
       flex-wrap: wrap;
 
@@ -72,7 +71,7 @@
         margin-top: 8px;
 
         &.selected {
-          background: darken($bg, 50%);
+          background: #2ECC71;
           color: #fff;
         }
       }

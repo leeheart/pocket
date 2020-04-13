@@ -1,10 +1,12 @@
 <template>
-  <ul class="tabs">
-    <li v-for="(item, index) in dataSource" :key="index"
-        :class="liClass(item)"
-        class="tabs-item"
-        @click="select(item)">{{item.text}}</li>
-  </ul>
+  <div class="tabs-wrapper">
+    <ul class="tabs">
+      <li v-for="(item, index) in dataSource" :key="index"
+          :class="liClass(item)"
+          class="tabs-item"
+          @click="select(item)">{{item.text}}</li>
+    </ul>
+  </div>
 </template>
 
 <script lang="ts">
@@ -36,29 +38,40 @@
 </script>
 
 <style lang="scss" scoped>
+  .tabs-wrapper{
+    padding: 12px 64px;
+    background: #2ECC71;
+  }
   .tabs {
+    border: 1px solid black;
+    border-radius: 6px;
     display: flex;
-    background: #c4c4c4;
-    font-size: 24px;
+    font-size: 20px;
+    overflow: hidden;
 
     &-item {
       width: 50%;
-      height: 64px;
+      height: 38px;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
+      color: #fff;
 
-      &.selected::after {
-        content: '';
-        display: block;
-        height: 4px;
-        background: #333;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
+      &.selected{
+        background: #34495E;
       }
+
+      /*&.selected::after {*/
+      /*  content: '';*/
+      /*  display: block;*/
+      /*  height: 4px;*/
+      /*  background: #3498DB;*/
+      /*  position: absolute;*/
+      /*  bottom: 0;*/
+      /*  left: 0;*/
+      /*  width: 100%;*/
+      /*}*/
     }
   }
 </style>

@@ -25,6 +25,7 @@
   @import "~@/assets/styles/helper.scss";
   nav{
     @extend %outerShadow;
+    padding: 6px 0;
     display: flex;
     font-size: 12px;
     > .item {
@@ -42,7 +43,7 @@
       }
     }
     > .item.selected{
-      color: black;
+      color: #2ECC71;
     }
   }
 </style>

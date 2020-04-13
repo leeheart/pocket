@@ -57,7 +57,7 @@
 
   .createTag {
     border: none;
-    background: #3498DB;
+    background: #2ECC71;
     color: #fff;
     border-radius: 4px;
     height: 40px;

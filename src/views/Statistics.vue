@@ -5,7 +5,7 @@
       <li v-for="(group, index) in groupedList" :key="index">
         <h3 class="title">
           {{beautify(group.title)}}
-          <span>￥{{group.total}}</span>
+          <span>{{type}}￥{{group.total}}</span>
         </h3>
         <ol>
           <li class="record" v-for="(item, index) in group.items" :key="index">
@@ -60,9 +60,11 @@
 
     get groupedList() {
       const {recordList} = this;
-      if (recordList.length === 0) {return [];}
-      const sortedList = clone(recordList).filter(r=>r.type === this.type).sort((a, b) => dayjs(b.createAt).valueOf() - dayjs(a.createAt).valueOf());
-      type Result = {title: string; items: RecordItem[]; total?: number}[];
+      const sortedList = clone(recordList)
+        .filter(r => r.type === this.type)
+        .sort((a, b) => dayjs(b.createAt).valueOf() - dayjs(a.createAt).valueOf());
+      if (sortedList.length === 0) {return [] as Result;}
+      type Result = { title: string; items: RecordItem[]; total?: number }[];
       const result: Result = [{title: dayjs(sortedList[0].createAt).format('YYYY-MM-DD'), items: [sortedList[0]]}];
       for (let i = 1; i < sortedList.length; i++) {
         const current = sortedList[i];
@@ -73,8 +75,8 @@
           result.push({title: dayjs(current.createAt).format('YYYY-MM-DD'), items: [current]});
         }
       }
-      result.forEach(group=>{
-        group.total = group.items.reduce((sum, item) => sum + item.amount, 0)
+      result.forEach(group => {
+        group.total = group.items.reduce((sum, item) => sum + item.amount, 0);
       });
       return result;
     }
@@ -86,24 +88,6 @@
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep {
-    .types-tabs-item {
-      background: #c4c4c4;
-
-      &.selected {
-        background: #fff;
-
-        &::after {
-          display: none;
-        }
-      }
-    }
-
-    .interval-tabs-item {
-      height: 48px;
-    }
-  }
-
   %item {
     padding: 8px 16px;
     line-height: 24px;
@@ -121,7 +105,8 @@
     @extend %item;
 
     .tag {
-      width: 20%;
+      width: 30%;
+      overflow: auto;
     }
 
     .notes {
@@ -138,9 +123,9 @@
   }
 
   .emptyNote {
-    font-size: 24px;
+    font-size: 20px;
     text-align: center;
     margin-top: 36px;
-    color: rgba(0,0,0,0.5);
+    color: rgba(0, 0, 0, 0.5);
   }
 </style>

@@ -1,11 +1,11 @@
 <template>
   <layout class-prefix="layout">
+    <Tabs :data-source="recordTypeList" :selection.sync="record.type"/>
     <Tags @update:value="onUpdateSelectedTags"/>
     <div class="notes">
       <FormItem place-holder="请输入备注" field-name="备注" @update:value="onUpdateNotes"/>
     </div>
-    <Tabs :data-source="recordTypeList" :selection.sync="record.type"/>
-    <NumberPad @update:value="onUpdateAmount" @submit="saveRecord"/>
+    <NumberPad :selected-tags="this.record.tags" @update:value="onUpdateAmount" @submit="saveRecord"/>
   </layout>
 </template>
 
@@ -17,7 +17,6 @@
   import {Component} from 'vue-property-decorator';
   import Tabs from '@/components/Tabs.vue';
   import recordTypeList from '@/constants/recordTypeList';
-
 
   @Component({
     components: {Tabs, NumberPad, FormItem, Tags},

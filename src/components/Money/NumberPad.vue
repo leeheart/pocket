@@ -2,33 +2,34 @@
   <div class="numberPad">
     <div class="output"><span class="rmb">￥</span>{{output}}</div>
     <div class="buttons">
-      <button @click="inputContent">1</button>
-      <button @click="inputContent">2</button>
-      <button @click="inputContent">3</button>
-      <button @click="deleteNumber">
+      <div class="button" @click="inputContent">1</div>
+      <div class="button" @click="inputContent">2</div>
+      <div class="button" @click="inputContent">3</div>
+      <div class="button" @click="deleteNumber">
         <Icon name="backspace"/>
-      </button>
-      <button @click="inputContent">4</button>
-      <button @click="inputContent">5</button>
-      <button @click="inputContent">6</button>
-      <button @click="clear">清零</button>
-      <button @click="inputContent">7</button>
-      <button @click="inputContent">8</button>
-      <button @click="inputContent">9</button>
-      <button @click="ok" class="ok">OK</button>
-      <button @click="inputContent" class="zero">0</button>
-      <button @click="inputContent">.</button>
+      </div>
+      <div class="button" @click="inputContent">4</div>
+      <div class="button" @click="inputContent">5</div>
+      <div class="button" @click="inputContent">6</div>
+      <div class="button" @click="clear">清零</div>
+      <div class="button" @click="inputContent">7</div>
+      <div class="button" @click="inputContent">8</div>
+      <div class="button" @click="inputContent">9</div>
+      <div class="button ok" @click="ok">OK</div>
+      <div class="button zero" @click="inputContent">0</div>
+      <div class="button" @click="inputContent">.</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
   import Vue from 'vue';
-  import {Component} from 'vue-property-decorator';
+  import {Component, Prop} from 'vue-property-decorator';
 
   @Component
   export default class NumberPad extends Vue {
     output = '0';
+    @Prop({type: Array, required: true}) readonly selectedTags!: string[];
 
     inputContent(e: MouseEvent) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -43,9 +44,9 @@
       }
       if (this.output.indexOf('.') >= 0) {
         const dotIndex = this.output.indexOf('.');
-        const afterDotLength = this.output.substr(dotIndex+1).length;
-        if(input === '.'){return;}
-        if(afterDotLength>=2){return;}
+        const afterDotLength = this.output.substr(dotIndex + 1).length;
+        if (input === '.') {return;}
+        if (afterDotLength >= 2) {return;}
       }
       if (this.output.length === 16) {
         return;
@@ -66,6 +67,14 @@
     }
 
     ok() {
+      if (this.selectedTags.length === 0) {
+        window.alert('需至少选择一个标签');
+        return;
+      }
+      if (this.output === '0') {
+        window.alert('请输入金额');
+        return;
+      }
       this.$emit('update:value', this.output);
       this.$emit('submit', this.output);
       this.output = '0';
@@ -92,55 +101,32 @@
 
     > .buttons {
       @extend %clearFix;
+      $bg: #f2f2f2;
 
-      > button {
+      > .button {
+        text-align: center;
         width: 25%;
         height: 64px;
+        line-height: 64px;
         float: left;
-        border: none;
         font-size: 20px;
+        border: 1px solid #fff;
+        background: #F5F5F5;
 
         &.ok {
           height: 64*2px;
+          line-height: 64*2px;
           float: right;
+          background: #2ECC71;
+          color: #fff;
         }
 
         &.zero {
           width: 25*2%;
         }
 
-        $bg: #f2f2f2;
-
         &:nth-child(4) > svg {
           font-size: 24px;
-        }
-
-        &:nth-child(1) {
-          background: $bg;
-        }
-
-        &:nth-child(2), &:nth-child(5) {
-          background: darken($bg, 4%);
-        }
-
-        &:nth-child(3), &:nth-child(6), &:nth-child(9) {
-          background: darken($bg, 4*2%);
-        }
-
-        &:nth-child(4), &:nth-child(7), &:nth-child(10) {
-          background: darken($bg, 4*3%);
-        }
-
-        &:nth-child(8), &:nth-child(11), &:nth-child(13) {
-          background: darken($bg, 4*4%);
-        }
-
-        &:nth-child(14) {
-          background: darken($bg, 4*5%);
-        }
-
-        &:nth-child(12) {
-          background: darken($bg, 4*6%);
         }
       }
     }
