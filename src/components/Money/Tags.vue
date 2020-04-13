@@ -1,24 +1,24 @@
 <template>
   <div class="tags">
+    <div class="new">
+      <button @click="create">新增标签</button>
+    </div>
     <ul class="current">
       <li @click="toggle(tag.name)"
           :class="{selected: selectedTags.indexOf(tag.name)>=0}"
           v-for="(tag, index) in tagList" :key="index">{{tag.name}}
       </li>
     </ul>
-    <div class="new">
-      <button @click="create">新增标签</button>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
   import Vue from 'vue';
-  import {Component} from 'vue-property-decorator';
+  import {Component, Prop} from 'vue-property-decorator';
 
   @Component
   export default class Tags extends Vue {
-    selectedTags: string[] = [];
+    @Prop({type: Array, required: true}) selectedTags!: string[];
 
     get tagList(){
       return this.$store.state.tagList;
@@ -35,7 +35,7 @@
       } else {
         this.selectedTags.push(tag);
       }
-      this.$emit('update:value', this.selectedTags)
+      this.$emit('update:selectedTags', this.selectedTags)
     }
 
     create() {
@@ -49,7 +49,7 @@
   .tags {
     background: #fff;
     font-size: 14px;
-    padding: 16px;
+    padding: 0 16px;
     flex-grow: 1;
     overflow: auto;
     display: flex;
@@ -58,6 +58,7 @@
     > .current {
       display: flex;
       flex-wrap: wrap;
+      padding: 8px 0;
 
       > li {
         $bg: #d9d9d9;

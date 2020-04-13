@@ -1,9 +1,9 @@
 <template>
   <layout class-prefix="layout">
     <Tabs :data-source="recordTypeList" :selection.sync="record.type"/>
-    <Tags @update:value="onUpdateSelectedTags"/>
+    <Tags :selected-tags.sync="record.tags"/>
     <div class="notes">
-      <FormItem place-holder="请输入备注" field-name="备注" @update:value="onUpdateNotes"/>
+      <FormItem :value.sync="record.notes" place-holder="请输入备注" field-name="备注"/>
     </div>
     <NumberPad :selected-tags="this.record.tags" @update:value="onUpdateAmount" @submit="saveRecord"/>
   </layout>
@@ -40,20 +40,15 @@
       this.$store.commit('fetchRecords');
     }
 
-    onUpdateSelectedTags(value: string[]) {
-      this.record.tags = value;
-    }
-
-    onUpdateNotes(value: string) {
-      this.record.notes = value;
-    }
-
     onUpdateAmount(value: string) {
       this.record.amount = parseFloat(value);
     }
 
     saveRecord() {
       this.$store.commit('createRecord', this.record);
+      window.alert('保存成功');
+      this.record.notes = '';
+      this.record.tags = [];
     }
   }
 </script>

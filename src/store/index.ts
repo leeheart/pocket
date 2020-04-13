@@ -11,13 +11,9 @@ const store = new Vuex.Store({
   state: {
     recordList: [],
     tagList: [],
-    currentTag: undefined,
-    x: undefined
+    currentTag: undefined
   } as RootState,
   mutations: {
-    setX(state){
-      state.x = 1
-    },
     setCurrentTag(state, id){
       state.currentTag = state.tagList.filter(item => item.id === id)[0];
     },
@@ -33,9 +29,14 @@ const store = new Vuex.Store({
     saveRecords(state) {
       localStorage.setItem('recordList', JSON.stringify(state.recordList));
     },
-
     fetchTags(state) {
       state.tagList = JSON.parse(localStorage.getItem('tagList') || '[]');
+      if(!state.tagList || state.tagList.length===0){
+        store.commit('createTag', '衣');
+        store.commit('createTag', '食');
+        store.commit('createTag', '住');
+        store.commit('createTag', '行');
+      }
     },
     saveTags(state) {
       localStorage.setItem('tagList', JSON.stringify(state.tagList));

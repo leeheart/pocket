@@ -18,7 +18,7 @@
   .layout-wrapper{
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height:-webkit-fill-available;
   }
   .content {
     flex-grow: 1;

@@ -16,4 +16,10 @@
     line-height: 1.5;
     background: #f5f5f5;
   }
+  html,body{
+    height:-webkit-fill-available;
+  }
+  body>div{
+    height:-webkit-fill-available;
+  }
 </style>
